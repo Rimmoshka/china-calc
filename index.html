@@ -3,49 +3,88 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Калькулятор товаров из Китая — ChinaCalc</title>
-
-  <!-- PWA -->
+  <title>Калькулятор товаров из Китая</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ff4d4f">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#D8A7A7">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Калькулятор товаров из Китая</h1>
-    <p class="sub">Посчитай себестоимость, доставку и рекомендованную цену — поделись ссылкой с клиентом.</p>
-  </header>
+  <div class="page">
+    <header class="header">
+      <h1>Расчёт стоимости товаров из <span class="brand">Китая</span></h1>
+    </header>
 
-  <main>
-    <form id="calcForm" onsubmit="return false;">
-      <div class="field"><label>Цена (CNY)<input id="priceCNY" type="number" step="0.01" value="39"></label></div>
-      <div class="field"><label>Курс (RUB/CNY)<input id="kurs" type="number" step="0.01" value="12.5"></label></div>
-      <div class="field"><label>Вес (кг)<input id="weightKg" type="number" step="0.01" value="0.2"></label></div>
-      <div class="field"><label>Доставка (RUB/кг)<input id="shipRUBperKg" type="number" step="0.01" value="650"></label></div>
-      <div class="field"><label>Упаковка (RUB/шт)<input id="packRUB" type="number" step="0.01" value="30"></label></div>
-      <div class="field"><label>Комиссия посредника (%)<input id="commissionPercent" type="number" step="0.01" value="10"></label></div>
-      <div class="field"><label>Фикс. комиссия (RUB/шт)<input id="commissionFixedRUB" type="number" step="0.01" value="0"></label></div>
-      <div class="field"><label>Количество<input id="qty" type="number" step="1" value="10"></label></div>
-      <div class="field"><label>Желаемая маржа (%)<input id="marginPercent" type="number" step="0.01" value="40"></label></div>
+    <main class="content">
+      <div class="grid">
+        <div class="card">
+          <label>Курс ¥</label>
+          <input id="cnyRate" type="number" step="0.01" value="10">
+        </div>
+        <div class="card">
+          <label>Курс $ на ЮВ</label>
+          <input id="usdRate" type="number" step="0.01" value="100">
+        </div>
+        <div class="card">
+          <label>Тариф за 1 кг ($)</label>
+          <input id="tariff" type="number" step="0.01" value="3.9">
+        </div>
+        <div class="card">
+          <label>Стоимость упаковки ($)</label>
+          <input id="packageCost" type="number" step="0.01" value="8">
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <label>Цена товара (¥)</label>
+          <input id="itemPrice" type="number" step="0.01" placeholder="Цена товара в юанях">
+        </div>
+        <div class="field">
+          <label>Количество единиц</label>
+          <input id="quantity" type="number" step="1" value="1">
+        </div>
+        <div class="field">
+          <label>Вес товара (грамм)</label>
+          <input id="weight" type="number" step="1" placeholder="в граммах">
+        </div>
+      </div>
+
+      <div class="toggles">
+        <label><input id="includePackage" type="checkbox"> Включить стоимость упаковки</label>
+        <label><input id="includeCommission" type="checkbox"> Добавить комиссию за заказ</label>
+        <div class="field small">
+          <label>Комиссия за заказ (%)</label>
+          <input id="commission" type="number" step="0.1" value="10" disabled>
+        </div>
+      </div>
+
+      <div class="modes">
+        <label><input type="radio" name="mode" value="goods" checked> Только стоимость товаров</label>
+        <label><input type="radio" name="mode" value="all"> Стоимость товаров, веса, упаковки</label>
+      </div>
+
+      <div class="result" id="result">
+        <div class="result-left">
+          <div class="line"><span>Стоимость товаров:</span><strong id="goodsCost">0 ₽</strong></div>
+          <div class="line"><span>Стоимость веса товаров:</span><strong id="weightCost">0 ₽</strong></div>
+          <div class="line"><span>Упаковка:</span><strong id="packageCostResult">0 ₽</strong></div>
+          <div class="line"><span>Комиссия:</span><strong id="commissionResult">0 ₽</strong></div>
+        </div>
+        <div class="result-right">
+          <div class="total">Итого</div>
+          <div class="total-sum" id="total">0 ₽</div>
+        </div>
+      </div>
 
       <div class="actions">
-        <button id="calcBtn" class="btn">Посчитать</button>
-        <button id="resetBtn" type="button" class="btn alt">Сброс</button>
-        <button id="shareBtn" type="button" class="btn">Поделиться расчётом</button>
-        <button id="installBtn" type="button" class="btn" style="display:none">Установить</button>
+        <button id="shareBtn">Поделиться расчётом</button>
+        <button id="resetBtn" class="alt">Сброс</button>
       </div>
-    </form>
+    </main>
 
-    <section id="output" class="result" aria-live="polite"></section>
-  </main>
-
-  <footer>
-    <small>Поддержка: отправь ссылку клиенту — он сможет «добавить на экран» и пользоваться как приложением.</small>
-  </footer>
+    <footer class="footer">Открыть ссылку — клиент сможет установить приложение на экран.</footer>
+  </div>
 
   <script src="script.js"></script>
 </body>

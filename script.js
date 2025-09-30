@@ -1,98 +1,90 @@
-// script.js — логика расчёта, share, PWA install, URL-параметры
 (function(){
   const el = id => document.getElementById(id);
-  const formatRub = x => Number(x).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₽';
+  function fmt(x){ return Number(x).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₽'; }
 
-  function getValues(){
-    return {
-      priceCNY: parseFloat(el('priceCNY').value) || 0,
-      kurs: parseFloat(el('kurs').value) || 0,
-      weightKg: parseFloat(el('weightKg').value) || 0,
-      shipRUBperKg: parseFloat(el('shipRUBperKg').value) || 0,
-      packRUB: parseFloat(el('packRUB').value) || 0,
-      commissionPercent: parseFloat(el('commissionPercent').value) || 0,
-      commissionFixedRUB: parseFloat(el('commissionFixedRUB').value) || 0,
-      qty: parseInt(el('qty').value) || 1,
-      marginPercent: parseFloat(el('marginPercent').value) || 0
-    };
+  function calculate(){
+    const cny = parseFloat(el('cnyRate').value) || 0;
+    const usd = parseFloat(el('usdRate').value) || 0;
+    const tariff = parseFloat(el('tariff').value) || 0;
+    const packUSD = parseFloat(el('packageCost').value) || 0;
+    const priceCNY = parseFloat(el('itemPrice').value) || 0;
+    const qty = parseInt(el('quantity').value) || 0;
+    const weight = parseFloat(el('weight').value) || 0;
+    const includePack = el('includePackage').checked;
+    const includeComm = el('includeCommission').checked;
+    const commission = parseFloat(el('commission').value) || 0;
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+
+    const goodsCost = priceCNY * qty * cny;
+    const weightKg = (weight * qty) / 1000;
+    const weightCost = weightKg * tariff * usd;
+    const packageCost = includePack ? (packUSD * usd) : 0;
+    const commissionCost = includeComm ? (goodsCost * commission / 100) : 0;
+
+    let total = 0;
+    if(mode === 'goods') total = goodsCost + commissionCost;
+    else total = goodsCost + weightCost + packageCost + commissionCost;
+
+    el('goodsCost').innerText = fmt(goodsCost);
+    el('weightCost').innerText = fmt(weightCost);
+    el('packageCostResult').innerText = fmt(packageCost);
+    el('commissionResult').innerText = fmt(commissionCost);
+    el('total').innerText = fmt(total);
   }
 
-  function calculateAndShow(){
-    const v = getValues();
-    const priceRUB = v.priceCNY * v.kurs;
-    const shipPerUnit = v.weightKg * v.shipRUBperKg;
-    const commPercRUB = priceRUB * (v.commissionPercent / 100);
-    const costPerUnit = priceRUB + shipPerUnit + v.packRUB + commPercRUB + v.commissionFixedRUB;
-    const totalCost = costPerUnit * v.qty;
-    const retail = costPerUnit * (1 + v.marginPercent / 100);
-
-    el('output').innerHTML = `
-      <strong>Результат (на 1 шт):</strong><br>
-      Цена в рублях: <strong>${formatRub(priceRUB)}</strong><br>
-      Доставка/упаковка: <strong>${formatRub(shipPerUnit + v.packRUB)}</strong><br>
-      Комиссия (%): <strong>${formatRub(commPercRUB)}</strong><br>
-      ---<br>
-      <strong>Себестоимость / шт:</strong> ${formatRub(costPerUnit)}<br>
-      <strong>Общая себестоимость (${v.qty} шт):</strong> ${formatRub(totalCost)}<br>
-      <strong>Рекомендуемая цена (маржа ${v.marginPercent}%):</strong> ${formatRub(retail)}<br>
-    `;
-  }
-
-  // Подставить значения из URL если есть
-  function populateFromURL(){
-    const p = new URLSearchParams(location.search);
-    ['priceCNY','kurs','weightKg','shipRUBperKg','packRUB','commissionPercent','commissionFixedRUB','qty','marginPercent'].forEach(k=>{
-      if(p.has(k)) el(k).value = p.get(k);
-    });
-  }
-
-  // Поделиться — формируем ссылку с параметрами
-  async function shareCalc(){
-    const v = getValues();
-    const params = new URLSearchParams(v).toString();
-    const url = location.origin + location.pathname + '?' + params;
-    // Попытка Web Share API
-    if(navigator.share){
-      try{
-        await navigator.share({title:'Расчёт товара из Китая', text:'Смотри расчёт', url});
-        return;
-      }catch(e){}
-    }
-    // Иначе копировать в буфер
-    try{
-      await navigator.clipboard.writeText(url);
-      alert('Ссылка скопирована в буфер — отправь её клиенту.');
-    }catch(e){
-      prompt('Скопируй ссылку вручную:', url);
-    }
-  }
-
-  // Установка PWA (кнопка)
-  let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const btn = el('installBtn');
-    btn.style.display = 'inline-block';
-    btn.onclick = async () => {
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      btn.style.display = 'none';
-    };
+  // enable/disable commission input
+  el('includeCommission').addEventListener('change', ()=>{
+    el('commission').disabled = !el('includeCommission').checked;
+    calculate();
   });
 
-  // Service worker регистрация
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(()=>{/*ignore*/});
+  // events on inputs
+  Array.from(document.querySelectorAll('input')).forEach(i=>{
+    i.addEventListener('input', calculate);
+    i.addEventListener('change', calculate);
+  });
+
+  // share button (copy link with params)
+  document.getElementById('shareBtn').addEventListener('click', async ()=>{
+    const params = new URLSearchParams({
+      cny: el('cnyRate').value, usd: el('usdRate').value, tariff: el('tariff').value,
+      pack: el('packageCost').value, price: el('itemPrice').value, qty: el('quantity').value,
+      weight: el('weight').value, includePack: el('includePackage').checked ? 1:0,
+      includeComm: el('includeCommission').checked ? 1:0, commission: el('commission').value,
+      mode: document.querySelector('input[name="mode"]:checked').value
+    }).toString();
+    const url = location.origin + location.pathname + '?' + params;
+    try{
+      if(navigator.share) await navigator.share({title:'Расчёт товара',text:'Ссылка на расчёт',url});
+      else{ await navigator.clipboard.writeText(url); alert('Ссылка скопирована'); }
+    }catch(e){ try{ await navigator.clipboard.writeText(url); alert('Ссылка скопирована'); }catch(e){ prompt('Скопируй ссылку',url); } }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>location.reload());
+  // pick params from url
+  function loadFromURL(){
+    const p = new URLSearchParams(location.search);
+    if(p.has('cny')) el('cnyRate').value = p.get('cny');
+    if(p.has('usd')) el('usdRate').value = p.get('usd');
+    if(p.has('tariff')) el('tariff').value = p.get('tariff');
+    if(p.has('pack')) el('packageCost').value = p.get('pack');
+    if(p.has('price')) el('itemPrice').value = p.get('price');
+    if(p.has('qty')) el('quantity').value = p.get('qty');
+    if(p.has('weight')) el('weight').value = p.get('weight');
+    if(p.has('includePack')) el('includePackage').checked = p.get('includePack')==='1';
+    if(p.has('includeComm')) el('includeCommission').checked = p.get('includeComm')==='1';
+    if(p.has('commission')) el('commission').value = p.get('commission');
+    if(p.has('mode')){
+      const m=p.get('mode'); document.querySelectorAll('input[name="mode"]').forEach(r=>{ if(r.value===m) r.checked=true; });
+    }
+    if(el('includeCommission').checked) el('commission').disabled=false;
   }
 
-  // events
-  el('calcBtn').addEventListener('click', calculateAndShow);
-  el('resetBtn').addEventListener('click', ()=>location.reload());
-  el('shareBtn').addEventListener('click', shareCalc);
+  loadFromURL();
+  calculate();
 
-  // init
-  populateFromURL();
-  calculateAndShow();
+  // register service worker for offline (if supported)
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
 })();
