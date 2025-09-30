@@ -1,29 +1,24 @@
 (function(){
-  const el = id => document.getElementById(id);
-  function fmt(x){ return Number(x).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₽'; }
+  const el=id=>document.getElementById(id);
+  const fmt=x=>Number(x).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₽';
 
   function calculate(){
-    const cny = parseFloat(el('cnyRate').value) || 0;
-    const usd = parseFloat(el('usdRate').value) || 0;
-    const tariff = parseFloat(el('tariff').value) || 0;
-    const packUSD = parseFloat(el('packageCost').value) || 0;
-    const priceCNY = parseFloat(el('itemPrice').value) || 0;
-    const qty = parseInt(el('quantity').value) || 0;
-    const weight = parseFloat(el('weight').value) || 0;
-    const includePack = el('includePackage').checked;
-    const includeComm = el('includeCommission').checked;
-    const commission = parseFloat(el('commission').value) || 0;
-    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const priceCNY = parseFloat(el('priceCNY').value) || 0;
+    const kurs = parseFloat(el('kurs').value) || 0;
+    const weight = parseFloat(el('weight').value) || 0; // grams per unit
+    const shipRUBperKg = parseFloat(el('shipRUBperKg').value) || 0;
+    const packRUB = parseFloat(el('packRUB').value) || 0;
+    const qty = parseInt(el('qty').value) || 0;
+    const commissionPercent = parseFloat(el('commissionPercent').value) || 0;
 
-    const goodsCost = priceCNY * qty * cny;
-    const weightKg = (weight * qty) / 1000;
-    const weightCost = weightKg * tariff * usd;
-    const packageCost = includePack ? (packUSD * usd) : 0;
-    const commissionCost = includeComm ? (goodsCost * commission / 100) : 0;
+    const priceRUBPerUnit = priceCNY * kurs;
+    const goodsCost = priceRUBPerUnit * qty;
+    const weightKgTotal = (weight * qty) / 1000;
+    const weightCost = weightKgTotal * shipRUBperKg;
+    const packageCost = packRUB * qty;
+    const commissionCost = goodsCost * (commissionPercent/100);
 
-    let total = 0;
-    if(mode === 'goods') total = goodsCost + commissionCost;
-    else total = goodsCost + weightCost + packageCost + commissionCost;
+    const total = goodsCost + weightCost + packageCost + commissionCost;
 
     el('goodsCost').innerText = fmt(goodsCost);
     el('weightCost').innerText = fmt(weightCost);
@@ -32,58 +27,37 @@
     el('total').innerText = fmt(total);
   }
 
-  // enable/disable commission input
-  el('includeCommission').addEventListener('change', ()=>{
-    el('commission').disabled = !el('includeCommission').checked;
-    calculate();
-  });
+  document.getElementById('calcBtn').addEventListener('click', calculate);
+  document.getElementById('resetBtn').addEventListener('click', ()=>{location.reload();});
 
-  // events on inputs
-  Array.from(document.querySelectorAll('input')).forEach(i=>{
-    i.addEventListener('input', calculate);
-    i.addEventListener('change', calculate);
-  });
-
-  // share button (copy link with params)
+  // share button builds URL with params
   document.getElementById('shareBtn').addEventListener('click', async ()=>{
     const params = new URLSearchParams({
-      cny: el('cnyRate').value, usd: el('usdRate').value, tariff: el('tariff').value,
-      pack: el('packageCost').value, price: el('itemPrice').value, qty: el('quantity').value,
-      weight: el('weight').value, includePack: el('includePackage').checked ? 1:0,
-      includeComm: el('includeCommission').checked ? 1:0, commission: el('commission').value,
-      mode: document.querySelector('input[name="mode"]:checked').value
+      priceCNY: el('priceCNY').value, kurs: el('kurs').value,
+      weight: el('weight').value, shipRUBperKg: el('shipRUBperKg').value,
+      packRUB: el('packRUB').value, qty: el('qty').value,
+      commissionPercent: el('commissionPercent').value
     }).toString();
     const url = location.origin + location.pathname + '?' + params;
     try{
       if(navigator.share) await navigator.share({title:'Расчёт товара',text:'Ссылка на расчёт',url});
       else{ await navigator.clipboard.writeText(url); alert('Ссылка скопирована'); }
-    }catch(e){ try{ await navigator.clipboard.writeText(url); alert('Ссылка скопирована'); }catch(e){ prompt('Скопируй ссылку',url); } }
+    }catch(e){ try{ await navigator.clipboard.writeText(url); alert('Ссылка скопирована'); }catch(e){ prompt('Скопируй ссылку', url); } }
   });
 
-  document.getElementById('resetBtn').addEventListener('click', ()=>location.reload());
-  // pick params from url
-  function loadFromURL(){
+  // load params from URL if present
+  (function loadFromURL(){
     const p = new URLSearchParams(location.search);
-    if(p.has('cny')) el('cnyRate').value = p.get('cny');
-    if(p.has('usd')) el('usdRate').value = p.get('usd');
-    if(p.has('tariff')) el('tariff').value = p.get('tariff');
-    if(p.has('pack')) el('packageCost').value = p.get('pack');
-    if(p.has('price')) el('itemPrice').value = p.get('price');
-    if(p.has('qty')) el('quantity').value = p.get('qty');
+    if(p.has('priceCNY')) el('priceCNY').value = p.get('priceCNY');
+    if(p.has('kurs')) el('kurs').value = p.get('kurs');
     if(p.has('weight')) el('weight').value = p.get('weight');
-    if(p.has('includePack')) el('includePackage').checked = p.get('includePack')==='1';
-    if(p.has('includeComm')) el('includeCommission').checked = p.get('includeComm')==='1';
-    if(p.has('commission')) el('commission').value = p.get('commission');
-    if(p.has('mode')){
-      const m=p.get('mode'); document.querySelectorAll('input[name="mode"]').forEach(r=>{ if(r.value===m) r.checked=true; });
-    }
-    if(el('includeCommission').checked) el('commission').disabled=false;
-  }
+    if(p.has('shipRUBperKg')) el('shipRUBperKg').value = p.get('shipRUBperKg');
+    if(p.has('packRUB')) el('packRUB').value = p.get('packRUB');
+    if(p.has('qty')) el('qty').value = p.get('qty');
+    if(p.has('commissionPercent')) el('commissionPercent').value = p.get('commissionPercent');
+  })();
 
-  loadFromURL();
-  calculate();
-
-  // register service worker for offline (if supported)
+  // register service worker
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(()=>{});
   }

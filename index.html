@@ -1,89 +1,72 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Калькулятор товаров из Китая</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Калькулятор — пепел розы</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#D8A7A7">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="page">
-    <header class="header">
-      <h1>Расчёт стоимости товаров из <span class="brand">Китая</span></h1>
+  <div class="wrap">
+    <header class="top">
+      <h1>Калькулятор<br><span>товаров из Китая</span></h1>
     </header>
 
-    <main class="content">
+    <main class="main">
+      <!-- 2x2 grid -->
       <div class="grid">
         <div class="card">
-          <label>Курс ¥</label>
-          <input id="cnyRate" type="number" step="0.01" value="10">
+          <label>Цена товара (CNY)</label>
+          <input id="priceCNY" type="number" step="0.01" placeholder="">
         </div>
         <div class="card">
-          <label>Курс $ на ЮВ</label>
-          <input id="usdRate" type="number" step="0.01" value="100">
+          <label>Курс (RUB/CNY)</label>
+          <input id="kurs" type="number" step="0.01" placeholder="">
         </div>
         <div class="card">
-          <label>Тариф за 1 кг ($)</label>
-          <input id="tariff" type="number" step="0.01" value="3.9">
+          <label>Вес (грамм)</label>
+          <input id="weight" type="number" step="1" placeholder="">
         </div>
         <div class="card">
-          <label>Стоимость упаковки ($)</label>
-          <input id="packageCost" type="number" step="0.01" value="8">
+          <label>Доставка (RUB/кг)</label>
+          <input id="shipRUBperKg" type="number" step="0.01" placeholder="">
         </div>
       </div>
 
-      <div class="fields">
-        <div class="field">
-          <label>Цена товара (¥)</label>
-          <input id="itemPrice" type="number" step="0.01" placeholder="Цена товара в юанях">
+      <!-- below: packaging, quantity, commission (default 15%) -->
+      <div class="row">
+        <div class="small-card">
+          <label>Стоимость упаковки (RUB)</label>
+          <input id="packRUB" type="number" step="0.01" placeholder="">
         </div>
-        <div class="field">
-          <label>Количество единиц</label>
-          <input id="quantity" type="number" step="1" value="1">
+        <div class="small-card">
+          <label>Количество</label>
+          <input id="qty" type="number" step="1" placeholder="">
         </div>
-        <div class="field">
-          <label>Вес товара (грамм)</label>
-          <input id="weight" type="number" step="1" placeholder="в граммах">
-        </div>
-      </div>
-
-      <div class="toggles">
-        <label><input id="includePackage" type="checkbox"> Включить стоимость упаковки</label>
-        <label><input id="includeCommission" type="checkbox"> Добавить комиссию за заказ</label>
-        <div class="field small">
-          <label>Комиссия за заказ (%)</label>
-          <input id="commission" type="number" step="0.1" value="10" disabled>
-        </div>
-      </div>
-
-      <div class="modes">
-        <label><input type="radio" name="mode" value="goods" checked> Только стоимость товаров</label>
-        <label><input type="radio" name="mode" value="all"> Стоимость товаров, веса, упаковки</label>
-      </div>
-
-      <div class="result" id="result">
-        <div class="result-left">
-          <div class="line"><span>Стоимость товаров:</span><strong id="goodsCost">0 ₽</strong></div>
-          <div class="line"><span>Стоимость веса товаров:</span><strong id="weightCost">0 ₽</strong></div>
-          <div class="line"><span>Упаковка:</span><strong id="packageCostResult">0 ₽</strong></div>
-          <div class="line"><span>Комиссия:</span><strong id="commissionResult">0 ₽</strong></div>
-        </div>
-        <div class="result-right">
-          <div class="total">Итого</div>
-          <div class="total-sum" id="total">0 ₽</div>
+        <div class="small-card">
+          <label>Комиссия (%)</label>
+          <input id="commissionPercent" type="number" step="0.1" value="15">
         </div>
       </div>
 
       <div class="actions">
-        <button id="shareBtn">Поделиться расчётом</button>
+        <button id="calcBtn">Посчитать</button>
         <button id="resetBtn" class="alt">Сброс</button>
+        <button id="shareBtn">Поделиться</button>
+      </div>
+
+      <div class="result" id="output" aria-live="polite">
+        <div class="line"><span>Стоимость товаров:</span><strong id="goodsCost">0 ₽</strong></div>
+        <div class="line"><span>Доставка (итого):</span><strong id="weightCost">0 ₽</strong></div>
+        <div class="line"><span>Упаковка:</span><strong id="packageCostResult">0 ₽</strong></div>
+        <div class="line"><span>Комиссия:</span><strong id="commissionResult">0 ₽</strong></div>
+        <div class="total"><span>Итого:</span><strong id="total">0 ₽</strong></div>
       </div>
     </main>
-
-    <footer class="footer">Открыть ссылку — клиент сможет установить приложение на экран.</footer>
+    <footer class="foot">Поделись расчётом с клиентом — он сможет добавить приложение на экран</footer>
   </div>
 
   <script src="script.js"></script>
