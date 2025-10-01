@@ -1,0 +1,85 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #eec9d2; /* пепел розы */
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #444;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 25px;
+  background: #f7f7f7;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1),
+              inset -2px -2px 5px rgba(255,255,255,0.7);
+}
+
+input:focus, select:focus {
+  outline: none;
+  background: #fff;
+}
+
+.options, .mode {
+  margin-top: 15px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+button {
+  flex: 1;
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:first-child {
+  background: #e57373;
+  color: white;
+}
+
+button:nth-child(2) {
+  background: #ccc;
+}
+
+#result {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #ffeef1;
+}
+
+#result h3 {
+  color: #d81b60;
+  text-align: center;
+}
