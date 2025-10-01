@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор товаров из Китая</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Калькулятор товаров из Китая</h2>
+
+    <label>Курс ¥</label>
+    <input type="number" id="kurs" placeholder="Введите курс">
+
+    <label>Курс (Южные ворота)</label>
+    <input type="number" id="kurs_south" placeholder="Введите курс">
+
+    <label>Тариф (₽/кг)</label>
+    <input type="number" id="tarif" placeholder="Введите тариф">
+
+    <label>Стоимость упаковки (₽)</label>
+    <input type="number" id="upakovka" placeholder="Введите стоимость">
+
+    <label>Цена товара (CNY)</label>
+    <input type="number" id="price" placeholder="Цена в юанях">
+
+    <label>Количество единиц</label>
+    <input type="number" id="count" value="1">
+
+    <label>Вес товара</label>
+    <select id="ves_select" onchange="toggleVesInput()">
+      <option value="500">500 г</option>
+      <option value="1000">1 кг</option>
+      <option value="2000">2 кг</option>
+      <option value="other">Другое (ввести вручную)</option>
+    </select>
+    <input type="number" id="ves_custom" placeholder="Введите вес в граммах" style="display:none;">
+
+    <div class="options">
+      <label><input type="checkbox" id="include_pack"> Включить стоимость упаковки</label>
+      <label><input type="checkbox" id="include_commission" checked> Включить комиссию (15%)</label>
+    </div>
+
+    <div class="mode">
+      <label><input type="radio" name="calc_mode" value="only" checked> Только стоимость товара</label>
+      <label><input type="radio" name="calc_mode" value="all"> Товар + вес + упаковка</label>
+    </div>
+
+    <div class="buttons">
+      <button onclick="calculate()">Посчитать</button>
+      <button onclick="resetForm()">Сброс</button>
+    </div>
+
+    <div id="result">
+      <p>Стоимость товаров: <span id="res_price">0</span> ₽</p>
+      <p>Доставка (итого): <span id="res_delivery">0</span> ₽</p>
+      <p>Упаковка: <span id="res_pack">0</span> ₽</p>
+      <p>Комиссия: <span id="res_comm">0</span> ₽</p>
+      <h3>Итого: <span id="res_total">0</span> ₽</h3>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
