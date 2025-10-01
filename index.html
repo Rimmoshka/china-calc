@@ -1,70 +1,113 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Калькулятор — пепел розы</title>
-<link rel="manifest" href="manifest.json">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Калькулятор — пепел розы (финал)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#D8A7A7">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="wrap">
-  <header class="top"><h1>Калькулятор<br><span>товаров из Китая</span></h1></header>
-  <main class="main">
-    <div class="grid">
-      <div class="card">
-        <label>Цена товара (CNY)</label>
-        <input id="priceCNY" type="number" step="0.01" placeholder="">
-      </div>
-      <div class="card">
-        <label>Курс (RUB/CNY)</label>
-        <input id="kurs" type="number" step="0.01" value="13">
-      </div>
-      <div class="card">
-        <label>Выберите товар (вес)</label>
-        <select id="productSelect">
-          <option value="">— Другое — (ввести вес вручную)</option>\n            <option value="400">Комплект одежды — 0.400 кг</option>\n            <option value="50">Ползунки, распашонки — 0.050 кг</option>\n            <option value="600">Спортивный костюм — 0.600 кг</option>\n            <option value="30">Трусы, майка — 0.030 кг</option>\n            <option value="20">Носки, гольфы — 0.020 кг</option>\n            <option value="350">Свитер, толстовка — 0.350 кг</option>\n            <option value="200">Пижама — 0.200 кг</option>\n            <option value="500">Куртка ветровка — 0.500 кг</option>\n            <option value="80">Футболка, топ — 0.080 кг</option>\n            <option value="150">Рубашка, блузка — 0.150 кг</option>\n            <option value="1000">Куртка зимняя, пуховик — 1.000 кг</option>\n            <option value="200">Платье, сарафан — 0.200 кг</option>\n            <option value="100">Шапка — 0.100 кг</option>\n            <option value="400">Джинсы — 0.400 кг</option>\n            <option value="150">Шарф — 0.150 кг</option>\n            <option value="150">Шорты — 0.150 кг</option>\n            <option value="80">Перчатки, варежки — 0.080 кг</option>\n            <option value="250">Юбка — 0.250 кг</option>\n            <option value="200">Тапки, шлепанцы — 0.200 кг</option>\n            <option value="800">Ботинки — 0.800 кг</option>\n            <option value="500">Босоножки, сандалии — 0.500 кг</option>\n            <option value="1000">Сапоги — 1.000 кг</option>\n            <option value="800">Кроссовки, мокасины — 0.800 кг</option>\n            <option value="1000">Резиновые сапоги — 1.000 кг</option>\n            <option value="600">Туфли — 0.600 кг</option>\n            <option value="800">Джинсы (жен) — 0.800 кг</option>\n            <option value="30">Трусы (жен) — 0.030 кг</option>\n            <option value="300">Шорты (жен) — 0.300 кг</option>\n            <option value="70">Бюстгальтер — 0.070 кг</option>\n            <option value="300">Юбка (жен) — 0.300 кг</option>\n            <option value="120">Купальник — 0.120 кг</option>\n            <option value="600">Свитер (жен) — 0.600 кг</option>\n            <option value="100">Майка, топ (жен) — 0.100 кг</option>\n            <option value="800">Толстовка (жен) — 0.800 кг</option>\n            <option value="250">Футболка (жен) — 0.250 кг</option>\n            <option value="400">Жакет, блейзер — 0.400 кг</option>\n            <option value="300">Рубашка, блузка (жен) — 0.300 кг</option>\n            <option value="1200">Полупальто, пальто, плащ — 1.200 кг</option>\n            <option value="500">Платье, сарафан (жен) — 0.500 кг</option>\n            <option value="1000">Куртка ветровка (жен) — 1.000 кг</option>\n            <option value="700">Вечернее платье — 0.700 кг</option>\n            <option value="850">Куртка осенняя (жен) — 0.850 кг</option>\n            <option value="1500">Куртка зимняя, пуховик (жен) — 1.500 кг</option>\n            <option value="950">Деловой костюм (жен) — 0.950 кг</option>\n            <option value="5000">Шуба — 5.000 кг</option>\n            <option value="600">Спортивный костюм (жен) — 0.600 кг</option>\n            <option value="150">Шапка (жен) — 0.150 кг</option>\n            <option value="600">Брюки, бриджи (жен) — 0.600 кг</option>\n            <option value="200">Шарф (жен) — 0.200 кг</option>\n            <option value="300">Леггинсы — 0.300 кг</option>\n            <option value="150">Перчатки, варежки (жен) — 0.150 кг</option>\n            <option value="350">Тапки, шлепанцы (жен) — 0.350 кг</option>\n            <option value="1200">Ботинки (жен) — 1.200 кг</option>\n            <option value="600">Босоножки, сандалии (жен) — 0.600 кг</option>\n            <option value="1300">Сапоги (жен) — 1.300 кг</option>\n            <option value="1100">Кроссовки (жен) — 1.100 кг</option>\n            <option value="1100">Резиновые сапоги (жен) — 1.100 кг</option>\n            <option value="700">Туфли (жен) — 0.700 кг</option>\n            <option value="800">Толстовка (муж) — 0.800 кг</option>\n            <option value="150">Трусы (муж) — 0.150 кг</option>\n            <option value="1200">Пиджак — 1.200 кг</option>\n            <option value="220">Майка, футболка (муж) — 0.220 кг</option>\n            <option value="1500">Пальто, плащ (муж) — 1.500 кг</option>\n            <option value="250">Рубашка (муж) — 0.250 кг</option>\n            <option value="1200">Куртка ветровка (муж) — 1.200 кг</option>\n            <option value="1800">Деловой костюм (муж) — 1.800 кг</option>\n            <option value="1400">Куртка осенняя (муж) — 1.400 кг</option>\n            <option value="1300">Спортивный костюм (муж) — 1.300 кг</option>\n            <option value="1800">Куртка зимняя, пуховик (муж) — 1.800 кг</option>\n            <option value="700">Брюки, бриджи (муж) — 0.700 кг</option>\n            <option value="800">Джинсы (муж) — 0.800 кг</option>\n            <option value="200">Шапка (муж) — 0.200 кг</option>\n            <option value="350">Шорты (муж) — 0.350 кг</option>\n            <option value="250">Шарф (муж) — 0.250 кг</option>\n            <option value="700">Свитер (муж) — 0.700 кг</option>\n            <option value="140">Перчатки (муж) — 0.140 кг</option>\n            <option value="700">Тапки, шлепанцы (муж) — 0.700 кг</option>\n            <option value="1400">Ботинки (муж) — 1.400 кг</option>\n            <option value="600">Сандали (муж) — 0.600 кг</option>\n            <option value="1800">Сапоги (муж) — 1.800 кг</option>\n            <option value="1200">Кроссовки, мокасины (муж) — 1.200 кг</option>\n            <option value="1400">Резиновые сапоги (муж) — 1.400 кг</option>\n            <option value="850">Туфли (муж) — 0.850 кг</option>\n            <option value="1000">Женская сумка — 1.000 кг</option>\n            <option value="1500">Рюкзак — 1.500 кг</option>\n            <option value="1000">Портфель — 1.000 кг</option>\n            <option value="5500">Дорожная сумка — 5.500 кг</option>\n            <option value="800">Барсетка — 0.800 кг</option>\n            <option value="300">Кошельки, портмоне — 0.300 кг</option>\n        </select>
-      </div>
-      <div class="card">
-        <label>Тариф за 1 кг (RUB)</label>
-        <input id="tariff" type="number" step="0.01" value="650">
-      </div>
-    </div>
+<div class="app">
+  <header class="hdr"><h1>Калькулятор <span>товаров из Китая</span></h1></header>
+
+  <main class="container">
+
+    <!-- row 1 -->
     <div class="row">
-      <div class="small-card">
-        <label>Стоимость упаковки (RUB)</label>
-        <input id="packRUB" type="number" step="0.01" value="0">
+      <div class="input-oval">
+        <input id="kursY" type="number" step="0.01" placeholder=" ">
+        <label for="kursY">Курс ¥</label>
       </div>
-      <div class="small-card">
-        <label>Количество</label>
-        <input id="qty" type="number" step="1" value="1">
-      </div>
-      <div class="small-card">
-        <label>Вес (грамм) — при выборе «Другое» вводите здесь</label>
-        <input id="weight" type="number" step="1" placeholder="" disabled>
+
+      <div class="input-oval">
+        <input id="kursSouth" type="number" step="0.01" placeholder=" ">
+        <label for="kursSouth">Курс (Южные ворота)</label>
       </div>
     </div>
-    <div class="toggles">
-      <label><input id="includePack" type="checkbox"> Включить упаковку</label>
-      <label><input id="includeCommission" type="checkbox" checked> Включить комиссию (15%)</label>
+
+    <!-- row 2 -->
+    <div class="row">
+      <div class="input-oval">
+        <input id="tariff" type="number" step="0.01" placeholder=" ">
+        <label for="tariff">Тариф (₽/кг)</label>
+      </div>
+
+      <div class="input-oval">
+        <input id="packCost" type="number" step="0.01" placeholder=" ">
+        <label for="packCost">Стоимость упаковки (₽)</label>
+      </div>
     </div>
-    <div class="actions">
-      <button id="calcBtn">Посчитать</button>
-      <button id="resetBtn" class="alt">Сброс</button>
-      <button id="shareBtn">Поделиться</button>
+
+    <!-- price big field -->
+    <div class="row">
+      <div class="input-oval big">
+        <span class="icon-y">¥</span>
+        <input id="priceCNY" type="number" step="0.01" placeholder=" ">
+        <label for="priceCNY">Цена товара (CNY)</label>
+      </div>
     </div>
-    <div class="result" id="output" aria-live="polite">
-      <div class="line"><span>Стоимость товаров:</span><strong id="goodsCost">0 ₽</strong></div>
-      <div class="line"><span>Доставка (итого):</span><strong id="weightCost">0 ₽</strong></div>
-      <div class="line"><span>Упаковка:</span><strong id="packageCostResult">0 ₽</strong></div>
-      <div class="line"><span>Комиссия:</span><strong id="commissionResult">0 ₽</strong></div>
-      <div class="total"><span>Итого:</span><strong id="total">0 ₽</strong></div>
+
+    <!-- qty + select weight -->
+    <div class="row">
+      <div class="input-oval">
+        <input id="qty" type="number" min="1" step="1" value="1" placeholder=" ">
+        <label for="qty">Количество единиц</label>
+      </div>
+
+      <div class="input-oval">
+        <select id="productSelect">
+          <option value="">— Другое — (ввести вес вручную)</option>
+        </select>
+        <label for="productSelect">Выбрать вес товара</label>
+      </div>
     </div>
+
+    <!-- manual weight -->
+    <div class="row">
+      <div class="input-oval full">
+        <input id="weight" type="number" step="1" placeholder=" " disabled>
+        <label for="weight">Вес (г) — если выбрано «Другое»</label>
+      </div>
+    </div>
+
+    <!-- toggles -->
+    <div class="row controls">
+      <label class="chk"><input id="includePack" type="checkbox"><span>Включить стоимость упаковки</span></label>
+      <label class="chk"><input id="includeCommission" type="checkbox" checked><span>Включить комиссию (15%)</span></label>
+    </div>
+
+    <!-- modes -->
+    <div class="row modes">
+      <label><input name="mode" type="radio" value="goods" checked> Только стоимость товара</label>
+      <label><input name="mode" type="radio" value="all"> Товар + вес + упаковка</label>
+    </div>
+
+    <!-- actions -->
+    <div class="row actions">
+      <button id="calcBtn" class="btn">Посчитать</button>
+      <button id="resetBtn" class="btn alt">Сброс</button>
+      <button id="shareBtn" class="btn alt">Поделиться</button>
+    </div>
+
+    <!-- result -->
+    <div class="row">
+      <div class="result">
+        <div class="row-res"><span>Стоимость товаров</span><strong id="goodsCost">0 ₽</strong></div>
+        <div class="row-res"><span>Доставка (итого)</span><strong id="weightCost">0 ₽</strong></div>
+        <div class="row-res"><span>Упаковка</span><strong id="packageCostResult">0 ₽</strong></div>
+        <div class="row-res"><span>Комиссия</span><strong id="commissionResult">0 ₽</strong></div>
+        <div class="row-total"><span>Итого</span><strong id="total">0 ₽</strong></div>
+      </div>
+    </div>
+
   </main>
-  <footer class="foot">Поделись расчётом с клиентом — он сможет добавить приложение на экран</footer>
+
+  <footer class="footer">Добавьте в закладки или установите на главный экран.</footer>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
